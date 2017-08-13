@@ -51,6 +51,6 @@ public class CreateEventActivity extends AppCompatActivity {
             EventSaver.getInstance().store_event(event);
 
         }
-        //Toast.makeText(getApplication(), "123123", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplication(), "123123", Toast.LENGTH_LONG).show();
     }
 }
