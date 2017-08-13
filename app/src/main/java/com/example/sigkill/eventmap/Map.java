@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +25,16 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.OnMapReadyCallback;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
+
 //import com.google.android.gms.location.places;
 public class Map extends android.support.v4.app.Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
-    private java.util.Map<Tag, Event> dict;
     private GoogleMap mMap;
 //    private LocationClient mLocationClient;
     @Override
@@ -42,6 +49,8 @@ public class Map extends android.support.v4.app.Fragment implements OnMapReadyCa
         return rootView;
     }
 
+    public java.util.Map<Marker, String> dict;
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
@@ -54,25 +63,44 @@ public class Map extends android.support.v4.app.Fragment implements OnMapReadyCa
 
     }
 
+    Integer hashcode = 0;
     @Override
     public void onMapClick(final LatLng latlng) {
 
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(latlng)
-                .title("lol")
+                .title("default")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
+
+
+
+        if (dict == null) {
+            dict = new HashMap<Marker, String>();
+        }
+
+        String id = hashcode.toString();
+        hashcode += 1;
+
+        dict.put(marker, id);
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Toast.makeText(getActivity(), "marker " + latlng.toString(), Toast.LENGTH_SHORT).show();
+                String id = dict.get(marker);
+                Intent intent = new Intent(getActivity(), CreateEventActivity.class);
+                intent.putExtra("id", id);
+                startActivity(intent);
+
                 return true;
             }
         });
 
         Intent intent = new Intent(getActivity(), CreateEventActivity.class);
+        intent.putExtra("id", id);
         intent.putExtra("latlng", latlng);
         startActivity(intent);
 
+
     }
+
 }

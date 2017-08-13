@@ -10,6 +10,7 @@ import java.util.Date;
  */
 
 public class Event {
+    public String id;
     public Date DateTime;
     public String Title;
     public String Description;
